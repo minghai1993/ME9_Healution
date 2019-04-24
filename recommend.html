@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
+        <link href="https://gitcdn.github.io/bootstrap-toggle/2.2.2/css/bootstrap-toggle.min.css" rel="stylesheet">
+        <script src="https://gitcdn.github.io/bootstrap-toggle/2.2.2/js/bootstrap-toggle.min.js"></script> 
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <style>
+        #wrapper
+        {
+            border: 1px solid #888;
+            display: inline-block;
+            padding:20px;
+        }
+        /* #carouselExampleIndicators{
+            height: 40%;
+        } */
+        .carousel-item{
+            text-align: center
+        }
+    </style>
+
+
+</head>
+<body>
+<div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel">
+    <ol class="carousel-indicators">
+      <li data-target="#carouselExampleIndicators" data-slide-to="0" class="active"></li>
+      <li data-target="#carouselExampleIndicators" data-slide-to="1"></li>
+      <li data-target="#carouselExampleIndicators" data-slide-to="2"></li>
+    </ol>
+    <div class="carousel-inner" style="background-color:lightgray">
+      <div class="carousel-item active">
+        <!-- <img src="" class="d-block w-100" alt="..."> -->
+        <div id="wrapper">
+                <label for="yes_no_radio">What kind of activity do you want?</label>
+ 
+              <p>
+                <input type="radio" name="yes_no" checked>Indoor</input>
+                <input type="radio" name="yes_no">Outdoor</input>
+                <input type="radio" name="yes_no">Both</input>
+              </p>
+        </div>
+      </div>
+      <div class="carousel-item">
+            <input type="checkbox" aria-label="Checkbox for following text input" ><label for="scales">Sports</label>
+            <input type="checkbox" aria-label="Checkbox for following text input"><label for="scales">History</label>
+            <input type="checkbox" aria-label="Checkbox for following text input"><label for="scales">Nature</label>
+        <!-- <img src="" class="d-block w-100" alt="..."> -->
+      </div>
+      <div class="carousel-item">
+            Surburb: <input type='text' name='suburb' id='suburb' placeholder="please enter your suburb name">
+        <!-- <img src="" class="d-block w-100" alt="..."> -->
+      </div>
+      <div class="carousel-item">
+            <div id="wrapper">
+                    <label for="yes_no_radio">What kind of activity do you want?</label>
+     
+                  <p>
+                    <input type="radio" name="yes_no" checked>Public</input>
+                    <input type="radio" name="yes_no">Private</input>
+                  </p>
+            </div>
+        <!-- <img src="" class="d-block w-100" alt="..."> -->
+      </div>
+    </div>
+    <a class="carousel-control-prev" href="#carouselExampleIndicators" role="button" data-slide="prev">
+      <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+      <span class="sr-only">Previous</span>
+    </a>
+    <a class="carousel-control-next" href="#carouselExampleIndicators" role="button" data-slide="next">
+      <span class="carousel-control-next-icon" aria-hidden="true"></span>
+      <span class="sr-only">Next</span>
+    </a>
+  </div>
+  <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+</body>
+</html>

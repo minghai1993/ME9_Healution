@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
+    <link href="https://gitcdn.github.io/bootstrap-toggle/2.2.2/css/bootstrap-toggle.min.css" rel="stylesheet">
+    <script src="https://gitcdn.github.io/bootstrap-toggle/2.2.2/js/bootstrap-toggle.min.js"></script>  
+    <style>
+        #header {
+            text-align: center;
+        }
+
+        /*        #outputTable{
+            display: flex;
+            justify-content: center
+             display: grid;
+            grid-template-columns: auto auto auto
+            text-align: center 
+        }*/
+        .img:focus {
+            background-color: green;
+            border-radius: 50px
+        }
+
+        #alert {
+            color: red
+        }
+
+        .button {
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 20px;
+        }
+
+        /*        .output {
+            width: 33%;
+            display: inline-block;
+            vertical-align: top
+        }*/
+
+        #row {
+            border: 1px solid black;
+
+        }
+
+        #form {
+            display: inline
+        }
+
+        #suburb {
+            width: 200px;
+            height: 20px
+        }
+
+        #label-type {
+            height: 20px
+        }
+
+        .label-type-2 {
+            width: 20%;
+            height: 25px display： inline-block；
+        }
+        .table-present-1 {
+            width: 60%;
+            display: inline-block;
+        }
+        .table-present-2{
+            width: 30%;
+            display: inline-block;
+            position: absolute;
+            top: 3%;
+            left: 65%
+        }
+
+        #button {
+            /* width: 50px;
+            height: 100%; */
+            display: inline;
+        }
+
+        /* #outputTableArt {
+            border: 1px solid black;
+            width: 33.33%
+        } */
+
+        /* Set the size of the div element that contains the map */
+        #map {
+            height: 400px;
+            /* The height is 400 pixels */
+            width: 100%;
+            /* The width is the width of the web page */
+        }
+
+        #main-area{
+            position: relative;
+        }
+
+        html,
+        body {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+        }
+
+    </style>
+</head>
+
+
+
+
+<body>
+    <!-- <button onclick="handleDisplay()">Click me</button> -->
+    <h3 id='test'>Map</h3>
+    <!-- <form action="#" method="post" id="form" class="demoForm"></form> -->
+    <div id='main-area'>
+        <div class="table-present-1">
+        <div id="map"></div>
+    </div>
+    <div class="table-present-2">
+    <fieldset id = legend>
+        <legend>Filter</legend>
+        Surburb: <input type='text' name='suburb' id='suburb' placeholder="please enter your suburb name">
+            <legend>Marker</legend>
+            &nbsp&nbsp&nbspArt:&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
+            <input type='image' src='https://healution.tk/wp-content/uploads/2019/04/newest_art-e1555563415757.png' id='icon_art' class='img' onclick="handleSubmit('art');return false">
+                    <label onclick="handleSubmit('art')">
+                      <input type="checkbox" id='checkArt' data-toggle="toggle" checked>
+                    </label>
+            <br></br>
+            Fountain:&nbsp&nbsp&nbsp
+            <input type='image' src='https://healution.tk/wp-content/uploads/2019/04/fountain_marker-e1555563362173.png' id='icon_fountain' class='img'
+                onclick="handleSubmit('drinkingFountain');return false">
+                <label onclick="handleSubmit('drinkingFountain')">
+                        <input type="checkbox" id='checkFt' data-toggle="toggle" checked>
+                      </label>
+                      <br></br>
+                      Monument:
+            <input type='image' src='https://healution.tk/wp-content/uploads/2019/04/monument_marker-e1555563396630.png' id='icon_monument' class='img'
+                onclick="handleSubmit('monument');return false">
+                <label onclick="handleSubmit('monument')">
+                        <input type="checkbox" id='checkMon' data-toggle="toggle" checked>
+                </label>
+                <br></br>
+                <input id='button' class='button' type="button" value="Show" onclick="handleSubmit()">
+    </fieldset>
+    <p id='alert'>The number in the marker idicates the density of that area</p>
+            
+            </div>
+        </div>
+            <div id='outputTable' class="container">
+            </div>
+            <script type="text/javascript" src="./suburb.js"></script>
+            <script type="text/javascript" src="./drinkingfountain.js"></script>
+            <script type="text/javascript" src="./art.js"></script>
+            <script type="text/javascript" src="./monument.js"></script>
+            <script type="application/javascript" src="./main_newst.js"></script>
+
+            <!--Load the API from the specified URL
+            * The async attribute allows the browser to render the page while the API loads
+            * The key parameter will contain your own API key (which is not needed for this tutorial)
+            * The callback parameter executes the initMap() function
+            -->
+
+            <script
+                src="https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/markerclusterer.js">
+                </script>
+            <script async defer
+                src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAyFJft-jNj7_wcp56wVfEvdem46_p8-XE&language=en&region=AU&callback=initMap">
+
+                </script>
+</body>
+
+</html>
