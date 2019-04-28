@@ -288,7 +288,7 @@ function initMap(a,b) {
         var markerCluster = new MarkerClusterer(map, a,
             {
                 imagePath: 'https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m',
-                minimumClusterSize: 5
+                minimumClusterSize: 100
             });
     }
     //console.log(markerCluster);
