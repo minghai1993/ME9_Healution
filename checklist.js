@@ -3,7 +3,7 @@ var result
 var art 
 var monument
 var drinkingFountain
-var sports
+var sports   
 var suburbList 
 var tram
 var bus
@@ -76,13 +76,14 @@ function handleSubmit(e){
     filtering($('#form1').serializeArray())
 }
 function filtering(submit){
+
     var selectSub = []
     var placeType = []
     var interest = []
     var suburb 
     var postcode
     console.log(submit)
-    debugger;
+
     for(var i = 0;i<submit.length;i++){
         if(submit[i].name == 'q1'){
             placeType = parseInt(submit[i].value)
@@ -190,7 +191,6 @@ function filtering(submit){
         // selectSub.concat(q)
     }
     console.log(selectSub)
-    debugger
     for(var j = 0; j < selectSub.length; j++){
         for(var i = 0; i < tram.length; i++){
             if(tram[i].sub_id == selectSub[j].suburb_id){
@@ -277,23 +277,66 @@ function disableElements(num){
     }
 }
 function printDetails(sel){
+    var add = []
     var details
+    //var disAdd = []
     if(sel.type_id == 'art'){
-        details = "<table class='table table-striped'><tr><th>Name</th><th>Address</th><th>Artist</th><th>Date</th><th>Type</th></tr><tr><td>" + sel.art_name + "</td><td>" + sel.art_address + "</td> <td>" +sel.artist+ "</td><td>"+sel.art_date+"</td><td>"+sel.art_asset_type+"</td></tr></table>"
+        add.push(sel.art_lat)
+        add.push(sel.art_long)
+        // add = getAddress(disAdd)
+        jQuery.get(
+            "https://maps.googleapis.com/maps/api/geocode/json?latlng="+ add[0]+","+add[1]+"&key=AIzaSyAyFJft-jNj7_wcp56wVfEvdem46_p8-XE&language=en&region=AU",
+        function(result) {
+            address = result.results[0].formatted_address
+            details = "<table class='table table-striped'><tr><th>Name</th><th>Artist</th><th>Date</th><th>Type</th><th>Address</th></tr><tr><td>" + sel.art_name + "</td><td>" +sel.artist+ "</td><td>"+sel.art_date+"</td><td>"+sel.art_asset_type+"</td><td>"+address+"</td></tr></table>"
+            document.getElementById("detail").innerHTML = details
+            // return address
+          }
+        )
     }else if(sel.type_id == 'monument'){
-        details = "<table class='table table-striped'><tr><th>Theme</th><th>Sub Theme</th><th>Name</th></tr><tr><td>" + sel.mmt_theme + "</td><td>" + sel.mmt_subtheme + "</td> <td>" +sel.mmt_name+ "</td></tr></table>"
+        add.push(sel.mmt_lat)
+        add.push(sel.mmt_long)
+        jQuery.get(
+            "https://maps.googleapis.com/maps/api/geocode/json?latlng="+ add[0]+","+add[1]+"&key=AIzaSyAyFJft-jNj7_wcp56wVfEvdem46_p8-XE&language=en&region=AU",
+        function(result) {
+            address = result.results[0].formatted_address
+            details = "<table class='table table-striped'><tr><th>Theme</th><th>Sub Theme</th><th>Name</th><th>Address</th></tr><tr><td>" + sel.mmt_theme + "</td><td>" + sel.mmt_subtheme + "</td> <td>" +sel.mmt_name+ "</td><td>" +address+ "</td></tr></table>"
+            document.getElementById("detail").innerHTML = details
+            // return address
+          }
+        )
     }else if(sel.type_id == 'Sport'){
-
+        add.push(sel.sp_lat)
+        add.push(sel.sp_long)
+        jQuery.get(
+            "https://maps.googleapis.com/maps/api/geocode/json?latlng="+ add[0]+","+add[1]+"&key=AIzaSyAyFJft-jNj7_wcp56wVfEvdem46_p8-XE&language=en&region=AU",
+        function(result) {
+            address = result.results[0].formatted_address
+            details = "<table class='table table-striped'><tr><th>Name</th><th>Facility</th><th>Address</th></tr><tr><td>" + sel.sp_name + "</td><td>" + sel.sp_facilityname + "</td><td>" + address + "</td></tr></table>"
+            document.getElementById("detail").innerHTML = details
+            // return address
+          }
+        )
         details = "<table class='table table-striped'><tr><th>Name</th><th>Facility</th></tr><tr><td>" + sel.sp_name + "</td><td>" + sel.sp_facilityname + "</td></tr></table>"
     }else if(sel.type_id == 'drinkingFountain'){
-        details = "<table class='table table-striped'><tr><th>Name</th><th>Type</th></tr><tr><td>" + sel.df_type + "</td><td>" + sel.df_subtype + "</td></tr></table>"
+        add.push(sel.df_lat)
+        add.push(sel.df_long)
+        jQuery.get(
+            "https://maps.googleapis.com/maps/api/geocode/json?latlng="+ add[0]+","+add[1]+"&key=AIzaSyAyFJft-jNj7_wcp56wVfEvdem46_p8-XE&language=en&region=AU",
+        function(result) {
+            address = result.results[0].formatted_address
+            details = "<table class='table table-striped'><tr><th>Name</th><th>Type</th><th>Address</th></tr><tr><td>" + sel.df_type + "</td><td>" + sel.df_subtype + "</td><td>" + address + "</td></tr></table>"
+            document.getElementById("detail").innerHTML = details
+            // return address
+          }
+        )
     }
     document.getElementById("detail").innerHTML = details
 
 }
-function testss(){
-    console.log(1)
-}
+// function testss(){
+//     console.log(1)
+// }
 function handleIput(i){
     printDetails(result[i])
 }
@@ -347,7 +390,23 @@ function printResult(arr){
 //     document.getElementById("searchOutput").innerHTML="<p>NO RESULT FOUND</p>"
 //     }
 // }
-    
+function getAddress(a){
+    // a = [44.4647452,7.3553838]
+    var address = "";
+    // debugger
+    // var request = new XMLHttpRequest();
+    //request.open('GET', "https://maps.googleapis.com/maps/api/geocode/json?latlng="+ a[0]+","+a[1]+"&key=AIzaSyAyFJft-jNj7_wcp56wVfEvdem46_p8-XE&language=en&region=AU", true);
+    jQuery.get(
+        "https://maps.googleapis.com/maps/api/geocode/json?latlng="+ a[0]+","+a[1]+"&key=AIzaSyAyFJft-jNj7_wcp56wVfEvdem46_p8-XE&language=en&region=AU",
+    function(result) {
+        address = result.results[0].formatted_address
+        console.log(address)
+        // return address
+      }
+    )
+    //address = request.send();
+    return address
+}   
 function randomSelect(){ 
     var total = []
     var final = []
@@ -647,12 +706,10 @@ function printPdf(){
     // doc.text('Hello world!' + date, 10, 10)
     // doc.save("Always Cherie" + date  +".pdf")
     $('#cmd').click(function () {   
-        doc.text += header
         doc.fromHTML($('#printCheck:visible').html(), 15, 15, {
             'width': 170,
                 'elementHandlers': specialElementHandlers
         });
-        doc.text += footer
         doc.save("Always Cherie" + date  +".pdf");
     });
 }
