@@ -336,7 +336,8 @@
                         <br>
 						<h3><p>Please enter your preferred suburb</p></h3>
 						<input id="mySuburb" type="text" name="q51" autofocus placeholder="suburb name/postcode" class="q33">
-					</div>
+                    </div>
+                    <div id = 'alert' style='color:red'></div>
 					<div class="submit">
 						<input id="submit" type="button" class="next-1" value="Submit" onclick="handleSubmit()">
 					</div>
@@ -358,7 +359,7 @@
 				<div id="searchOutput">
 				</div>
 			</div>
-			<div class="third">
+			<div class="third" id = 'third' style = 'display:none'>
                     <div id="trans"></div>
 					<input id="datepicker" width="276" onchange = 'changeDate()' style=" display:none">
 					<div title="Add to Calendar" class="addeventatc" style=" display:none; background-color: #26c6da" class = 'butt' >
@@ -374,6 +375,7 @@
         </div>
         <div id="map2"></div>
 <script>
+    var valid = false
     var checklistMap
     var finalResult
     var art 
@@ -469,9 +471,14 @@
     $(".big").hide()
     
     function handleSubmit(e){
-        $("#form1").hide()
-        $(".big").show()
-        filtering($('#form1').serializeArray())
+        console.log(valid)
+        if(valid){
+            $("#form1").hide()
+            $(".big").show()
+            filtering($('#form1').serializeArray())
+        }else{
+            document.getElementById('alert').innerHTML = 'please select one suburb from dropdown list'
+        }
     }
     function filterTrans(suburbLi){
         for(var i = 0;i < bus.length;i++){
@@ -690,6 +697,7 @@
         });
     function handleTableClick(i) {
         $('#datepicker').show()
+        $('#third').show()
         $('#addeventatc1').show()
         generateTrans(i-1)
         generateCalendar(i-1)
@@ -1237,6 +1245,7 @@
                         b.innerHTML += ", "+autolist[i][1];
                         b.innerHTML += "<input type='hidden' value='" + autolist[i]+"'>"
                         b.addEventListener("click", function (e) {
+                            valid = true
                             inp.value = this.getElementsByTagName("input")[0].value;
                             closeAllLists();
                         })
@@ -1251,6 +1260,7 @@
                             b.innerHTML += autolist[i][s].substr(val.length);
                             b.innerHTML += "<input type='hidden' value='" + autolist[i]+"'>"
                             b.addEventListener("click", function (e) {
+                                valid = true
                                 b.innerHTML += "<input type='hidden' value='" + autolist[i]+"'>"
                                 inp.value = this.getElementsByTagName("input")[0].value;
                                 closeAllLists();
