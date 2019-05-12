@@ -2,14 +2,15 @@
 <html>
 <head>
 	<meta charset="utf-8">
+	<script type="text/javascript" src="https://addevent.com/libs/atc/1.6.1/atc.min.js" async defer></script>
 	<script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
 	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<script src="https://unpkg.com/gijgo@1.9.13/js/gijgo.min.js" type="text/javascript"></script>
 	<link href="https://unpkg.com/gijgo@1.9.13/css/gijgo.min.css" rel="stylesheet" type="text/css">
 	<!-- <script src="https://cdn.staticfile.org/jquery/1.10.2/jquery.min.js"></script> -->
-	<script src="html2canvas.min.js" type="text/javascript"></script>
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/0.9.0rc1/jspdf.min.js"></script>
+	<!-- <script src="html2canvas.min.js" type="text/javascript"></script> -->
+	<script type='text/javascript' src='https://alwayscherie.ml/wp-content/plugins/html2canvas/html2canvas.min.js'></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/0.9.0rc1/jspdf.min.js"></script>
 	  <style>
 	  @media screen and (max-width: 800px) {
@@ -266,7 +267,6 @@
 		}
 		#bootstrap-overrides .table {
 			font-family: Roboto;
-			color: #fff000;
 			letter-spacing: 0.5px;
 		}
 		#bootstrap-overrides .table>tbody>tr {
@@ -286,7 +286,6 @@
 			vertical-align: top;
 			border-top: 1px solid #dee2e6;
 		}
-	}
 	</style>  
 	 
 	 <body id="bootstrap-overrides">
@@ -353,16 +352,19 @@
 					</div>
 				</div>
 				<div class="third">
-					<div id="detail"></div>
-					<input id="datepicker" width="276">
+					<div id="trans"></div>
+					<input id="datepicker" width="276" onchange = 'changeDate()' style=" display:none">
+					<div title="Add to Calendar" class="addeventatc" style=" display:none">
+					</div>
 				</div>
 			</div>
 		</div>
 	<div id="hiddenPdf" style = 'overflow: hidden; height: 0px'>
-		<div id='showPdf' style="height:297mm;width:210mm;background-image: url('https://www.alwayscherie.ml/wp-content/uploads/2019/05/ME09_TeamLogo.png');background-color: lightblue">
-			<h1> Always Cherie </h1>
+		<div id='showPdf' style="height:297mm;width:210mm;background-color: lightblue">
+			<h1> Always Cherie <img scr = 'https://www.alwayscherie.ml/wp-content/uploads/2019/05/ME09_TeamLogo.png'></h1> 
 		</div>
 	</div>
+	<div id="map2"></div>
 <script type="application/javascript" src="./checklist_it3_newst.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
@@ -371,7 +373,7 @@
 src="https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/markerclusterer.js">
 </script>
 <script async defer
-src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAyFJft-jNj7_wcp56wVfEvdem46_p8-XE&language=en&region=AU">
+src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAyFJft-jNj7_wcp56wVfEvdem46_p8-XE&language=en&region=AU&&libraries=places">
 
 </script>
 </body>

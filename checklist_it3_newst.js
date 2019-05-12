@@ -38,18 +38,21 @@ jQuery.get(
     'https://healution.tk/?rest_route=/petes-custom-api/v1/art',
 function(result) {
     art = result
+    console.log(art)
   }
 )
 jQuery.get(
     'https://healution.tk/?rest_route=/petes-custom-api/v1/drinking_fountain',
 function(result) {
     drinkingFountain = result
+    console.log(drinkingFountain)
   }
 )
 jQuery.get(
     'https://healution.tk/?rest_route=/petes-custom-api/v1/monument',
 function(result) {
     monument = result
+    console.log(monument)
   }
 )
 jQuery.get(
@@ -112,23 +115,50 @@ function(result) {
             }
         }
     }
-    function publicTransport(lat,long,sub,arr){
+    function publicTrans(lat,long,q){
     	var min = Infinity;
     	var mark;
-    	for(var i=0;i<arr.length;i++){
-    		if(arr[i].sub_id==sub && (Math.abs(arr[i].bs_lat*arr[i].bs_lat-lat*lat)+Math.abs(arr[i].bs_long*arr[i].bs_long-long*long))<min){
-    			min = Math.abs(arr[i].bs_lat*arr[i].bs_lat-lat*lat)+Math.abs(arr[i].bs_long*arr[i].bs_long-long*long)
+    	for(var i=0;i<new_bus.length;i++){
+    		if((Math.abs(new_bus[i].bs_lat*new_bus[i].bs_lat-lat*lat)+Math.abs(new_bus[i].bs_long*new_bus[i].bs_long-long*long))<min){
+    			min = Math.abs(new_bus[i].bs_lat*new_bus[i].bs_lat-lat*lat)+Math.abs(new_bus[i].bs_long*new_bus[i].bs_long-long*long)
     			mark = i
-    			console.log(min)
-    			console.log(i)
+    		}
+        }
+        console.log(mark)
+    	if(mark >= 0) {
+    		finalResult[q].bus = new_bus[mark]
+    	}
+    	else{
+    		finalResult[q].bus = ''
+        }
+        mark = -1
+        min = Infinity
+        for(var i=0;i<new_tram.length;i++){
+    		if((Math.abs(new_tram[i].tm_lat*new_tram[i].tm_lat-lat*lat)+Math.abs(new_tram[i].tm_long*new_tram[i].tm_long-long*long))<min){
+    			min = Math.abs(new_tram[i].tm_lat*new_tram[i].tm_lat-lat*lat)+Math.abs(new_tram[i].tm_long*new_tram[i].tm_long-long*long)
+    			mark = i
     		}
     	}
     	if(mark >= 0) {
-    		return arr[mark].bs_desc
+    		finalResult[q].tram = new_tram[mark]
     	}
     	else{
-    		return 'N/A'
+    		finalResult[q].tram = ''
+        }
+        mark = -1
+        min = Infinity
+        for(var i=0;i<new_railwayStation.length;i++){
+    		if((Math.abs(new_railwayStation[i].rs_lat*new_railwayStation[i].rs_lat-lat*lat)+Math.abs(new_railwayStation[i].rs_long*new_railwayStation[i].rs_long-long*long))<min){
+    			min = Math.abs(new_railwayStation[i].rs_lat*new_railwayStation[i].rs_lat-lat*lat)+Math.abs(new_railwayStation[i].rs_long*new_railwayStation[i].rs_long-long*long)
+    			mark = i
+    		}
     	}
+    	if(mark >= 0) {
+    		finalResult[q].railwayStation = new_railwayStation[mark]
+    	}
+    	else{
+    		finalResult[q].railwayStation = ''
+        }
     }
     function filtering(submit){
         var selectSub = []
@@ -201,7 +231,7 @@ function(result) {
         }else if(placeType == 3){
             if(interest.length == 3){
     
-            }else if(nterest.length == 2 && interest[0] == 1 && interest[1] == 2){
+            }else if(interest.length == 2 && interest[0] == 1 && interest[1] == 2){
                 drinkingFountain = []
             }else if(interest.length == 2 && interest[0] == 2 && interest[2] == 3){
                 inSport = []
@@ -279,13 +309,19 @@ function(result) {
         var sub_patt = new RegExp("^[a-zA-Z]+$");
         var post_patt = new RegExp("^[0-9]+$")
         finalResult = randomSelect()
+        // for(var i = 0;i<finalResult.length; i++;){
+        //     finalResult[i].bus = publicBus(finalResult[i].sp_lat,finalResult[i].sp_long,finalResult[i].sub_id,bus)
+        //     finalResult[i].tram = publicTram(finalResult[i].sp_lat,finalResult[i].sp_long,finalResult[i].sub_id,bus)
+        //     finalResult[i].railwayStation = publicRailStation(finalResult[i].sp_lat,finalResult[i].sp_long,finalResult[i].sub_id,bus)
+        // }
         initCheckListMap(finalResult,selectSub[0])
         printResult(finalResult)
     }
-    
-    function handleTableClick(i){
-    }
     function handleTableClick(i) {
+        $('#datepicker').show()
+        $('#addeventatc1').show()
+        generateTrans(i-1)
+        generateCalendar(i-1)
         $('#datepicker').datepicker({
             uiLibrary: 'bootstrap4'
         });
@@ -293,16 +329,75 @@ function(result) {
         $("#" + i * 100).show()
         document.getElementById(i * 100).removeAttribute("data-html2canvas-ignore")
         var content = document.getElementById(i * 100).cloneNode(true)
-        document.getElementById('showPdf').appendChild(content)
+        var dive= document.createElement('div')
+        dive.setAttribute("id",i*1000)
+        document.getElementById('showPdf').appendChild(dive)
+        document.getElementById(i*1000).appendChild(content)
+        var res = ''
+        if(finalResult[i-1].bus == ''){
+            res += "<tr><th>Bus</th><td>Not Found</td></tr>"
+        }else{
+            res += "<table class = 'table'><tr><th>Bus</th><td>"+finalResult[i-1].bus.bs_desc+"("+finalResult[i-1].bus.bs_stopid+")</td></tr>"
+        }
+        if(finalResult[i-1].tram == ''){
+            res += "<tr><th>Tram</th><td>Not Found</td></tr>"
+        }else{
+            res += "<tr><th>Tram</th><td>"+finalResult[i-1].tram.tm_desc+"("+finalResult[i-1].tram.tm_stopid+")</td></tr>"
+        }
+        if(finalResult[i-1].railwayStation == ''){
+            res += "<tr><th>Railway Station</th><td>Not Found</td></tr>"
+        }else{
+            res += "<tr><th>Railway Station</th><td>"+finalResult[i-1].railwayStation.rs_desc+"("+finalResult[i-1].railwayStation.rs_stopid+")</td></tr>"
+        }
+        var transR = document.createElement('table')
+        transR.setAttribute('class','table')
+        transR.innerHTML = res
+        dive.appendChild(transR)
+        
     }
-    
     function handleCheckDelete(i) {
         $("#" + i * 10).show()
         $("#" + i * 100).hide()
         $("#" + i * 100).attr("data-html2canvas-ignore",true)
     }
+    function changeDate(){
+        var v = document.getElementById('datepicker').value
+        console.log(v)
+        document.getElementById('startDate').innerHTML = v
+    }
     
-    
+    function generateCalendar(index){
+        var calendar = document.getElementById('addeventatc1')
+        var time = document.getElementById('datepicker').value
+        var resC = 'Add to Google Calendar'
+        var title = ''
+        var add = []
+        if(finalResult[index].type_id == 'art'){
+            add.push(finalResult[index].art_lat)
+            add.push(finalResult[index].art_long)
+            title = finalResult[index].art_name
+        }else if(finalResult[index].type_id == 'sports'){
+            add.push(finalResult[index].sp_lat)
+            add.push(finalResult[index].sp_long)
+            title = finalResult[index].sp_facilityname
+        }else if(finalResult[index].type_id == 'monument'){
+            add.push(finalResult[index].mmt_lat)
+            add.push(finalResult[index].mmt_long)
+            title = finalResult[index].mmt_name
+        }else if(finalResult[index].type_id == 'drinkingFountain'){
+            add.push(finalResult[index].df_lat)
+            add.push(finalResult[index].df_long)
+            title = finalResult[index].df_type
+        }
+        jQuery.get(
+            "https://maps.googleapis.com/maps/api/geocode/json?latlng=" + add[0] + "," + add[1] + "&key=AIzaSyAyFJft-jNj7_wcp56wVfEvdem46_p8-XE&language=en&region=AU",
+            function (result) {
+                var address = result.results[0].formatted_address
+                resC += "<span id='startDate' class='start'>"+time+"</span><span class='timezone'>Australia/Melbourne</span><span class='title'>"+title+"</span><span class='location'>"+address+"</span>"
+                calendar.innerHTML = resC
+            }
+        )
+    }
     function disableElements(num){
         for(var m=0;m<num;m++){
             $("#"+(m+1)*100).hide();
@@ -315,6 +410,8 @@ function(result) {
     //     });
     //     informWindow.open(map, marker)
     // }
+
+
     function opencWindow(map, marker) {
             var context = ''
         var add = []
@@ -335,162 +432,291 @@ function(result) {
                 }
             )
         }
-    function printDetails(index) {
-        var add = []
-        var details
-        //var disAdd = []
-        if (finalResult[index].type_id == 'art') {
-            add.push(finalResult[index].art_lat)
-            add.push(finalResult[index].art_long)
-            // add = getAddress(disAdd)
-            jQuery.get(
-                "https://maps.googleapis.com/maps/api/geocode/json?latlng=" + add[0] + "," + add[1] + "&key=AIzaSyAyFJft-jNj7_wcp56wVfEvdem46_p8-XE&language=en&region=AU",
-                function (result) {
-                    address = result.results[0].formatted_address
-                    details = "<table class='table'><tr onclick='highLight(" + index + ")'><th>Name</th><td>" + finalResult[index].art_name + "</td></tr><tr onclick='highLight(" + index + ")'><th>Artist</th><td>" + finalResult[index].artist + "</td></tr><tr onclick='highLight(" + index + ")'><th>Address</th><td>" + address + "</td></tr><tr><td class='jq'  onclick='handleTableClick(" + (index + 1) + ")'>Add" + "<ion-icon name='add-circle-outline'></ion-icon>" + "</td><td onclick='linkGoogleMap("+add[0]+","+add[1]+")'><a>Link to Google Map</a></td></tr></table>"
-                    document.getElementById("detail").innerHTML = details
-                    // return address
-                }
-            )
-        } else if (finalResult[index].type_id == 'monument') {
-            add.push(finalResult[index].mmt_lat)
-            add.push(finalResult[index].mmt_long)
-            jQuery.get(
-                "https://maps.googleapis.com/maps/api/geocode/json?latlng=" + add[0] + "," + add[1] + "&key=AIzaSyAyFJft-jNj7_wcp56wVfEvdem46_p8-XE&language=en&region=AU",
-                function (result) {
-                    address = result.results[0].formatted_address
-                    details = "<table class='table'><tr onclick='highLight(" + index + ")'><th>Theme</th><td>" + finalResult[index].mmt_theme + "</td></tr><tr onclick='highLight(" + index + ")'><th>Sub Theme</th><td>" + finalResult[index].mmt_subtheme + "</td></tr><tr onclick='highLight(" + index + ")'><th>Name</th><td>" + finalResult[index].mmt_name + "</td></tr><tr onclick='highLight(" + index + ")'><th>Address</th><td>" + address + "</td></tr><tr><td class='jq'  onclick='handleTableClick(" + (index + 1) + ")'>Add" + "<ion-icon name='add-circle-outline'></ion-icon>" + "</td><td onclick='linkGoogleMap("+add[0]+","+add[1]+")'><a>Link to Google Map</a></td></tr></table>"
-                    document.getElementById("detail").innerHTML = details
-                    // return address
-                }
-            )
-        } else if (finalResult[index].type_id == 'Sport') {
-            add.push(finalResult[index].sp_lat)
-            add.push(finalResult[index].sp_long)
-            jQuery.get(
-                "https://maps.googleapis.com/maps/api/geocode/json?latlng=" + add[0] + "," + add[1] + "&key=AIzaSyAyFJft-jNj7_wcp56wVfEvdem46_p8-XE&language=en&region=AU",
-                function (result) {
-                    address = result.results[0].formatted_address
-                    // details = "<table class='table'><tr onclick='highLight(" + index + ")'><th>Name</th><td>" + finalResult[index].sp_name + "</td></tr><tr onclick='highLight(" + index + ")'><th>Facility</th><td>" + finalResult[index].sp_facilityname + "</td></tr><tr onclick='highLight(" + index + ")'><th>Address</th><td>" + address + "</td></tr><tr><td class='jq'  onclick='handleTableClick(" + (index + 1) + ")'>Add" + "<ion-icon name='add-circle-outline'></ion-icon>" + "</td><td onclick='linkGoogleMap("+add[0]+","+add[1]+")'><a>Link to Google Map</a></td></tr></table>"
-                    // document.getElementById("detail").innerHTML = details
-                    var service = new google.maps.places.PlacesService(document.getElementById('map2'));
-                    var request = {query: finalResult[index].sp_facilityname,fields: ['rating'],};
-                    service.findPlaceFromQuery(request,function(result,status){
-                    	if(result){
-                    	details = "<table class='table'><tr onclick='highLight(" + index + ")'><th>Name</th><td>" + finalResult[index].sp_name + "</td></tr><tr onclick='highLight(" + index + ")'><th>Facility</th><td>" + finalResult[index].sp_facilityname + "</td></tr><tr onclick='highLight(" + index + ")'><th>Address</th><td>" + address + "</td></tr><tr><td class='jq'  onclick='handleTableClick(" + (index + 1) + ")'>Add" + "<ion-icon name='add-circle-outline'></ion-icon>" + "</td><td onclick='linkGoogleMap("+add[0]+","+add[1]+")'><a>Link to Google Map</a></td></tr><tr><th>Rating</th><td>"+ result[0].rating +"</td></tr></table>"
-                    	document.getElementById("detail").innerHTML = details}
-                    	else{
-                    	details = "<table class='table'><tr onclick='highLight(" + index + ")'><th>Name</th><td>" + finalResult[index].sp_name + "</td></tr><tr onclick='highLight(" + index + ")'><th>Facility</th><td>" + finalResult[index].sp_facilityname + "</td></tr><tr onclick='highLight(" + index + ")'><th>Address</th><td>" + address + "</td></tr><tr><td class='jq'  onclick='handleTableClick(" + (index + 1) + ")'>Add" + "<ion-icon name='add-circle-outline'></ion-icon>" + "</td><td onclick='linkGoogleMap("+add[0]+","+add[1]+")'><a>Link to Google Map</a></td></tr><tr><th>Rating</th><td>N/A</td></tr></table>"
-                    	document.getElementById("detail").innerHTML = details
-                    	}
-                    })
-                    console.log(publicTransport(finalResult[index].sp_lat,finalResult[index].sp_long,finalResult[index].sub_id,bus))
-                    // return address
-                }
-            )
-    
-        } else if (finalResult[index].type_id == 'drinkingFountain') {
-            add.push(finalResult[index].df_lat)
-            add.push(finalResult[index].df_long)
-            jQuery.get(
-                "https://maps.googleapis.com/maps/api/geocode/json?latlng=" + add[0] + "," + add[1] + "&key=AIzaSyAyFJft-jNj7_wcp56wVfEvdem46_p8-XE&language=en&region=AU",
-                function (result) {
-                    address = result.results[0].formatted_address
-                    details = "<table class='table'><tr onclick='highLight(" + index + ")'><th>Name</th><td>" + finalResult[index].df_type +"</td></tr><tr onclick='highLight(" + index + ")'><th>Type</th><td>" + finalResult[index].df_subtype + "</td></tr><tr onclick='highLight(" + index + ")'><th>Address</th><td>" + address + "</td></tr><tr><td class='jq'  onclick='handleTableClick(" + (index + 1) + ")'>Add" + "<ion-icon name='add-circle-outline'></ion-icon>" + "</td><td onclick='linkGoogleMap("+add[0]+","+add[1]+")'><a>Link to Google Map</a></td></tr></table>"
-                    document.getElementById("detail").innerHTML = details
-                    // return address
-                }
-            )
+    function generateTrans(index){ 
+        var res = ''
+        if(finalResult[index].bus == ''){
+            res += "<table class = 'table'><tr><th>Bus</th><td>Not Found</td></tr>"
+        }else{
+            res += "<table class = 'table'><tr><th>Bus</th><td>"+finalResult[index].bus.bs_desc+"("+finalResult[index].bus.bs_stopid+")</td></tr>"
         }
-        // document.getElementById("detail").innerHTML = details
+        if(finalResult[index].tram == ''){
+            res += "<tr><th>Tram</th><td>Not Found</td></tr>"
+        }else{
+            res += "<tr><th>Tram</th><td>"+finalResult[index].tram.tm_desc+"("+finalResult[index].tram.tm_stopid+")</td></tr>"
+        }
+        if(finalResult[index].railwayStation == ''){
+            res += "<tr><th>Railway Station</th><td>Not Found</td></tr>"
+        }else{
+            res += "<tr><th>Railway Station</th><td>"+finalResult[index].railwayStation.rs_desc+"("+finalResult[index].railwayStation.rs_stopid+")</td></tr></table>"
+        }
+        document.getElementById('trans').innerHTML = res
+    }
+    // function printDetails(index) {
+    //     var add = []
+    //     var details
+    //     //var disAdd = []
+    //     if (finalResult[index].type_id == 'art') {
+    //         add.push(finalResult[index].art_lat)
+    //         add.push(finalResult[index].art_long)
+    //         // add = getAddress(disAdd)
+    //         jQuery.get(
+    //             "https://maps.googleapis.com/maps/api/geocode/json?latlng=" + add[0] + "," + add[1] + "&key=AIzaSyAyFJft-jNj7_wcp56wVfEvdem46_p8-XE&language=en&region=AU",
+    //             function (result) {
+    //                 address = result.results[0].formatted_address
+    //                 details = "<table class='table'><tr onclick='highLight(" + index + ")'><th>Name</th><td>" + finalResult[index].art_name + "</td></tr><tr onclick='highLight(" + index + ")'><th>Artist</th><td>" + finalResult[index].artist + "</td></tr><tr onclick='highLight(" + index + ")'><th>Address</th><td>" + address + "</td></tr><tr><td class='jq'  onclick='handleTableClick(" + (index + 1) + ")'>Add" + "<ion-icon name='add-circle-outline'></ion-icon>" + "</td><td onclick='linkGoogleMap("+add[0]+","+add[1]+")'><a>Link to Google Map</a></td></tr></table>"
+    //                 document.getElementById("detail").innerHTML = details
+    //                 // return address
+    //             }
+    //         )
+    //     } else if (finalResult[index].type_id == 'monument') {
+    //         add.push(finalResult[index].mmt_lat)
+    //         add.push(finalResult[index].mmt_long)
+    //         jQuery.get(
+    //             "https://maps.googleapis.com/maps/api/geocode/json?latlng=" + add[0] + "," + add[1] + "&key=AIzaSyAyFJft-jNj7_wcp56wVfEvdem46_p8-XE&language=en&region=AU",
+    //             function (result) {
+    //                 address = result.results[0].formatted_address
+    //                 details = "<table class='table'><tr onclick='highLight(" + index + ")'><th>Theme</th><td>" + finalResult[index].mmt_theme + "</td></tr><tr onclick='highLight(" + index + ")'><th>Sub Theme</th><td>" + finalResult[index].mmt_subtheme + "</td></tr><tr onclick='highLight(" + index + ")'><th>Name</th><td>" + finalResult[index].mmt_name + "</td></tr><tr onclick='highLight(" + index + ")'><th>Address</th><td>" + address + "</td></tr><tr><td class='jq'  onclick='handleTableClick(" + (index + 1) + ")'>Add" + "<ion-icon name='add-circle-outline'></ion-icon>" + "</td><td onclick='linkGoogleMap("+add[0]+","+add[1]+")'><a>Link to Google Map</a></td></tr></table>"
+    //                 document.getElementById("detail").innerHTML = details
+    //                 // return address
+    //             }
+    //         )
+    //     } else if (finalResult[index].type_id == 'Sport') {
+    //         add.push(finalResult[index].sp_lat)
+    //         add.push(finalResult[index].sp_long)
+    //         jQuery.get(
+    //             "https://maps.googleapis.com/maps/api/geocode/json?latlng=" + add[0] + "," + add[1] + "&key=AIzaSyAyFJft-jNj7_wcp56wVfEvdem46_p8-XE&language=en&region=AU",
+    //             function (result) {
+    //                 address = result.results[0].formatted_address
+    //                 // details = "<table class='table'><tr onclick='highLight(" + index + ")'><th>Name</th><td>" + finalResult[index].sp_name + "</td></tr><tr onclick='highLight(" + index + ")'><th>Facility</th><td>" + finalResult[index].sp_facilityname + "</td></tr><tr onclick='highLight(" + index + ")'><th>Address</th><td>" + address + "</td></tr><tr><td class='jq'  onclick='handleTableClick(" + (index + 1) + ")'>Add" + "<ion-icon name='add-circle-outline'></ion-icon>" + "</td><td onclick='linkGoogleMap("+add[0]+","+add[1]+")'><a>Link to Google Map</a></td></tr></table>"
+    //                 // document.getElementById("detail").innerHTML = details
+    //                 var service = new google.maps.places.PlacesService(document.getElementById('map2'));
+    //                 var request = {query: finalResult[index].sp_facilityname,fields: ['rating'],};
+    //                 service.findPlaceFromQuery(request,function(result,status){
+    //                 	if(result){
+    //                 	details = "<table class='table'><tr onclick='highLight(" + index + ")'><th>Name</th><td>" + finalResult[index].sp_name + "</td></tr><tr onclick='highLight(" + index + ")'><th>Facility</th><td>" + finalResult[index].sp_facilityname + "</td></tr><tr onclick='highLight(" + index + ")'><th>Address</th><td>" + address + "</td></tr><tr><td class='jq'  onclick='handleTableClick(" + (index + 1) + ")'>Add" + "<ion-icon name='add-circle-outline'></ion-icon>" + "</td><td onclick='linkGoogleMap("+add[0]+","+add[1]+")'><a>Link to Google Map</a></td></tr><tr><th>Rating</th><td>"+ result[0].rating +"</td></tr></table>"
+    //                 	document.getElementById("detail").innerHTML = details}
+    //                 	else{
+    //                 	details = "<table class='table'><tr onclick='highLight(" + index + ")'><th>Name</th><td>" + finalResult[index].sp_name + "</td></tr><tr onclick='highLight(" + index + ")'><th>Facility</th><td>" + finalResult[index].sp_facilityname + "</td></tr><tr onclick='highLight(" + index + ")'><th>Address</th><td>" + address + "</td></tr><tr><td class='jq'  onclick='handleTableClick(" + (index + 1) + ")'>Add" + "<ion-icon name='add-circle-outline'></ion-icon>" + "</td><td onclick='linkGoogleMap("+add[0]+","+add[1]+")'><a>Link to Google Map</a></td></tr><tr><th>Rating</th><td>N/A</td></tr></table>"
+    //                 	document.getElementById("detail").innerHTML = details
+    //                 	}
+    //                 })
+    //                 // finalResult[index].bus = publicBus(finalResult[index].sp_lat,finalResult[index].sp_long,finalResult[index].sub_id,bus)
+    //                 // finalResult[index].tram = publicTram(finalResult[index].sp_lat,finalResult[index].sp_long,finalResult[index].sub_id,bus)
+    //                 // finalResult[index].railwayStation = publicRailStation(finalResult[index].sp_lat,finalResult[index].sp_long,finalResult[index].sub_id,bus)
+    //                 // return address
+    //             }
+    //         )
     
-    }
+    //     } else if (finalResult[index].type_id == 'drinkingFountain') {
+    //         add.push(finalResult[index].df_lat)
+    //         add.push(finalResult[index].df_long)
+    //         jQuery.get(
+    //             "https://maps.googleapis.com/maps/api/geocode/json?latlng=" + add[0] + "," + add[1] + "&key=AIzaSyAyFJft-jNj7_wcp56wVfEvdem46_p8-XE&language=en&region=AU",
+    //             function (result) {
+    //                 address = result.results[0].formatted_address
+    //                 details = "<table class='table'><tr onclick='highLight(" + index + ")'><th>Name</th><td>" + finalResult[index].df_type +"</td></tr><tr onclick='highLight(" + index + ")'><th>Type</th><td>" + finalResult[index].df_subtype + "</td></tr><tr onclick='highLight(" + index + ")'><th>Address</th><td>" + address + "</td></tr><tr><td class='jq'  onclick='handleTableClick(" + (index + 1) + ")'>Add" + "<ion-icon name='add-circle-outline'></ion-icon>" + "</td><td onclick='linkGoogleMap("+add[0]+","+add[1]+")'><a>Link to Google Map</a></td></tr></table>"
+    //                 document.getElementById("detail").innerHTML = details
+    //                 // return address
+    //             }
+    //         )
+    //     }
+    //     // document.getElementById("detail").innerHTML = details
+    
+    // }
     function handleIput(i){
-        printDetails(i)
     }
-    function generateChecklist(address,name,q,arr){
+    // function generateChecklist(address,name,q,arr,type){
+    //     jQuery.get(
+	// 		"https://maps.googleapis.com/maps/api/geocode/json?latlng=" + address[0] + "," + address[1] + "&key=AIzaSyAyFJft-jNj7_wcp56wVfEvdem46_p8-XE&language=en&region=AU",
+	// 		function (result) {
+	// 			var check = document.createElement('table');
+    //             // check.setAttribute("id","resultArea")
+    //             check.setAttribute('class','table')
+    //             check.setAttribute("id",(q + 1) * 100)
+    //             check.setAttribute("data-html2canvas-ignore",true)
+	// 			var addr = result.results[0].formatted_address
+	// 			var checkk = "<tr onclick='generateTrans("+q+")'><td>Go to " + type + " called " + name + " at " +addr +"</td><td data-html2canvas-ignore = 'true' onclick='linkGoogleMap("+address[0]+","+address[1]+")'><a>Link to Google Map</a></td><td data-html2canvas-ignore = 'true' id = 'remove' onclick = handleCheckDelete(" + (q + 1) + ")>Remove<ion-icon name='close'></ion-icon></td></tr>"
+	// 			// return address
+	// 			check.innerHTML = checkk;
+	// 			checkList.appendChild(check);
+	// 			$("#" + (q + 1) * 100).hide()                       
+	// 			// document.getElementById("checklist").innerHTML += checklist;
+	// 		}
+	// 	)
+    // }
+    function generateChecklist(address,name,q,arr,type){
         jQuery.get(
 			"https://maps.googleapis.com/maps/api/geocode/json?latlng=" + address[0] + "," + address[1] + "&key=AIzaSyAyFJft-jNj7_wcp56wVfEvdem46_p8-XE&language=en&region=AU",
 			function (result) {
-				var check = document.createElement('table');
-                // check.setAttribute("id","resultArea")
+				var check = document.createElement('tr');
+                check.setAttribute("onclick","generateTrans("+q+")")
+                // check.setAttribute('class','table')
                 check.setAttribute("id",(q + 1) * 100)
                 check.setAttribute("data-html2canvas-ignore",true)
 				var addr = result.results[0].formatted_address
-				var checkk = "<tr onclick='handleIput(" + q + ")'><td>Go to " + arr[q].type_id + " called " + name + " at " +addr +"</td><td data-html2canvas-ignore = 'true' id = 'remove' onclick = handleCheckDelete(" + (q + 1) + ")>Remove<ion-icon name='close'></ion-icon></td></tr>"
+				var checkk = "<td>Go to " + type + " called " + name + " at " +addr +"</td><td data-html2canvas-ignore = 'true' onclick='linkGoogleMap("+address[0]+","+address[1]+")'><a>Link to Google Map</a></td><td data-html2canvas-ignore = 'true' id = 'remove' onclick = handleCheckDelete(" + (q + 1) + ")>Remove<ion-icon name='close'></ion-icon></td>"
 				// return address
-				check.innerHTML = checkk;
-				checkList.appendChild(check);
+                check.innerHTML = checkk;
+                var finalcheck = document.getElementById('finalchecklist')
+				finalcheck.appendChild(check);
 				$("#" + (q + 1) * 100).hide()                       
 				// document.getElementById("checklist").innerHTML += checklist;
 			}
 		)
     }
+    function generateResult(request, icon, name,q){
+        var service = new google.maps.places.PlacesService(document.getElementById('map2'));
+        var res
+        service.findPlaceFromQuery(request,function(result,status){
+            var child = document.createElement('tr')
+            child.setAttribute('id',(q + 1) * 10)
+            fffresult.appendChild(child)
+            if(result){
+                res = "<td onclick='highLight(" + q + ")'><img src =" + icon + "></td><td onclick='highLight(" + q + ")'>" + name + "</td><td onclick='highLight(" + q + ")'>"+ result[0].rating +"<td class='jq'  onclick='handleTableClick(" + (q + 1) + ")'>Add" + "<ion-icon name='add-circle-outline'></ion-icon>" + "</td>"
+            }
+            else{
+                res = "<td onclick='highLight(" + q + ")'><img src =" + icon + "></td><td onclick='highLight(" + q + ")'>" + name + "</td><td onclick='highLight(" + q + ")'>N/A<td class='jq'  onclick='handleTableClick(" + (q + 1) + ")'>Add" + "<ion-icon name='add-circle-outline'></ion-icon>" + "</td>"
+            }
+            document.getElementById((q + 1) * 10).innerHTML = res
+        })
+    }
     function printResult(arr) {
-        checkList = document.getElementById("checklist")
-        var checklists = "<h2 id= 'header' style='height:0px; overflow:hidden'>Always Cherie</h2><table id ='printCheck' data-html2canvas-ignore:'true' class='table'><tr><th>Checklist</th><th><button id = 'cmd' onclick='printPdf();return false'>Download</button></th></tr></table>"
-        checkList.innerHTML = checklists;
-        var ArtIcon = 'https://www.alwayscherie.ml/wp-content/uploads/2019/04/art-e1554804124459.png'
-        var SportIcon = 'https://www.alwayscherie.ml/wp-content/uploads/2019/04/Sports-e1556383453142.png'
-    	var MonumentIcon = 'https://www.alwayscherie.ml/wp-content/uploads/2019/04/monument_new-e1556386212609.jpeg'
-    	var FountainIcon = 'https://www.alwayscherie.ml/wp-content/uploads/2019/04/new_fountain-e1554968248774.png'
-        var icon
+        console.log(arr)
         if (arr.length > 0) {
-            var res = "<table class='table'><tr><th>Name</th><th>Type</th><th>Marker</th></tr>";
+            var a = "<table class='table' id='ffResult'><tr><th>Theme</th><th>Name</th><th>Rating</th><th>Add</th></tr></table>";
+            document.getElementById("searchOutput").innerHTML = a
+            fffresult = document.getElementById('ffResult')        
+            checkList = document.getElementById("checklist")
+            var checklists = "<h2 id= 'header' style='height:0px; overflow:hidden'>Always Cherie</h2><table id ='printCheck' data-html2canvas-ignore:'true' class='table'><tr><th>Checklist</th><th><button id = 'cmd' onclick='printPdf();return false'>Download</button></th></tr></table><table class ='table' id = 'finalchecklist'><tr><th>Event</th><th>Google Map</th><th>Remove</th></tr></table>"
+            checkList.innerHTML = checklists;
+            var ArtIcon = 'https://www.alwayscherie.ml/wp-content/uploads/2019/04/art-e1554804124459.png'
+            var SportIcon = 'https://www.alwayscherie.ml/wp-content/uploads/2019/04/Sports-e1556383453142.png'
+            var MonumentIcon = 'https://www.alwayscherie.ml/wp-content/uploads/2019/04/monument_new-e1556386212609.jpeg'
+            var FountainIcon = 'https://www.alwayscherie.ml/wp-content/uploads/2019/04/new_fountain-e1554968248774.png'
+            var icon
+            
             // var checklist = "<table id ='printCheck' class='table'><tr><th>Checklist</th><th>Delete</th></tr>"
             for (var q = 0; q < arr.length; q++) {
                 var name
                 var address = []
+                var request 
+                var res
+                var type = ''
                 if (arr[q].type_id == 'Sport') {
+                    publicTrans(finalResult[q].sp_lat,finalResult[q].sp_long,q)
                     icon = SportIcon
                     name = arr[q].sp_name
                     address.push(arr[q].sp_lat)
                     address.push(arr[q].sp_long)
-                    generateChecklist(address,name,q,arr)
-                    res += "<tr id=" + (q + 1) * 10 + "><td onclick='handleIput(" + q + ")'>" + name + "</td><td onclick='handleIput(" + q + ")'>" + arr[q].type_id + "</td><td onclick='handleIput(" + q + ")'><img src =" + icon + "></td></tr>"
-                    // jQuery.get(
-                    //     "https://maps.googleapis.com/maps/api/geocode/json?latlng=" + address[0] + "," + address[1] + "&key=AIzaSyAyFJft-jNj7_wcp56wVfEvdem46_p8-XE&language=en&region=AU",
-                    //     function (result) {
-                            
-                    //         var addr = result.results[0].formatted_address
-                    //         checklist += "<tr onclick='handleIput(" + q + ")' id=" + (q + 1) * 100 + "><td>There is a " + arr[q].type_id + " place " + name + " at " +addr +"</td><td onclick = handleCheckDelete(" + (q + 1) + ")><ion-icon name='close'></ion-icon></td></tr>"
-                    //         res += "<tr id=" + (q + 1) * 10 + "><td onclick='handleIput(" + q + ")'>" + name + "</td><td onclick='handleIput(" + q + ")'>" + arr[q].type_id + "</td><td onclick='handleIput(" + q + ")'><img src =" + icon + "></td></tr>"
-                    //         // return address
-                    //     }
-                    // )
+                    type = 'a sport'
+                    generateChecklist(address,name,q,arr,type)
+                    request = {query: arr[q].sp_facilityname,fields: ['rating'],};
+                    generateResult(request, icon, name,q)
                 } else if (arr[q].type_id == 'art') {
+                    publicTrans(finalResult[q].art_lat,finalResult[q].art_long,q)
                     icon = ArtIcon
                     name = arr[q].art_name
                     address.push(arr[q].art_lat)
                     address.push(arr[q].art_long)
-                    generateChecklist(address,name,q,arr)
-                    res += "<tr id=" + (q + 1) * 10 + "><td onclick='handleIput(" + q + ")'>" + name + "</td><td onclick='handleIput(" + q + ")'>" + arr[q].type_id + "</td><td onclick='handleIput(" + q + ")'><img src =" + icon + "></td></tr>"
+                    type = 'an art'
+                    generateChecklist(address,name,q,arr,type)
+                    request = {query: arr[q].art_name,fields: ['rating'],};
+                    generateResult(request, icon, name,q)
                 } else if (arr[q].type_id == 'drinkingFountain') {
+                    publicTrans(finalResult[q].df_lat,finalResult[q].df_long,q)
                     icon = FountainIcon
                     name = arr[q].df_type
                     address.push(arr[q].df_lat)
                     address.push(arr[q].df_long)
-                    generateChecklist(address,name,q,arr)
-                    res += "<tr id=" + (q + 1) * 10 + "><td onclick='handleIput(" + q + ")'>" + name + "</td><td onclick='handleIput(" + q + ")'>" + arr[q].type_id + "</td><td onclick='handleIput(" + q + ")'><img src =" + icon + "></td></tr>"
+                    type = 'a drinking fountain'
+                    generateChecklist(address,name,q,arr,type)
+                    request = {query: arr[q].df_type,fields: ['rating'],};
+                    generateResult(request, icon, name,q)
                 } else if (arr[q].type_id == 'monument') {
+                    publicTrans(finalResult[q].mmt_lat,finalResult[q].mmt_long,q)
                     icon = MonumentIcon
                     name = arr[q].mmt_theme
                     address.push(arr[q].mmt_lat)
                     address.push(arr[q].mmt_long)
-                    generateChecklist(address,name,q,arr)
-                    res += "<tr id=" + (q + 1) * 10 + "><td onclick='handleIput(" + q + ")'>" + name + "</td><td onclick='handleIput(" + q + ")'>" + arr[q].type_id + "</td><td onclick='handleIput(" + q + ")'><img src =" + icon + "></td></tr>"
+                    type = 'a monument'
+                    generateChecklist(address,name,q,arr,type)
+                    request = {query: arr[q].mmt_name,fields: ['rating'],};
+                    generateResult(request, icon, name,q)
                 }
             }
-    
-            res += "</table>"
             // checklist += "</table><button id = 'cmd' onclick='printPdf();return false'>Download</button>"
             // document.getElementById("checklist").innerHTML = checklist;
-            document.getElementById("searchOutput").innerHTML = res;
-            disableElements(q)
+
+            // disableElements(q)
         } else {
             document.getElementById("searchOutput").innerHTML = "<h2>NO RESULT FOUND</h2>"
         }
     }
+    // function printResult(arr) {
+    //     checkList = document.getElementById("checklist")
+    //     var checklists = "<h2 id= 'header' style='height:0px; overflow:hidden'>Always Cherie</h2><table id ='printCheck' data-html2canvas-ignore:'true' class='table'><tr><th>Checklist</th><th><button id = 'cmd' onclick='printPdf();return false'>Download</button></th></tr></table>"
+    //     checkList.innerHTML = checklists;
+    //     var ArtIcon = 'https://www.alwayscherie.ml/wp-content/uploads/2019/04/art-e1554804124459.png'
+    //     var SportIcon = 'https://www.alwayscherie.ml/wp-content/uploads/2019/04/Sports-e1556383453142.png'
+    // 	var MonumentIcon = 'https://www.alwayscherie.ml/wp-content/uploads/2019/04/monument_new-e1556386212609.jpeg'
+    // 	var FountainIcon = 'https://www.alwayscherie.ml/wp-content/uploads/2019/04/new_fountain-e1554968248774.png'
+    //     var icon
+    //     if (arr.length > 0) {
+    //         var res = "<table class='table'><tr><th>Name</th><th>Type</th><th>Marker</th></tr>";
+    //         // var checklist = "<table id ='printCheck' class='table'><tr><th>Checklist</th><th>Delete</th></tr>"
+    //         for (var q = 0; q < arr.length; q++) {
+    //             var name
+    //             var address = []
+    //             if (arr[q].type_id == 'Sport') {
+    //                 icon = SportIcon
+    //                 name = arr[q].sp_name
+    //                 address.push(arr[q].sp_lat)
+    //                 address.push(arr[q].sp_long)
+    //                 generateChecklist(address,name,q,arr)
+    //                 res += "<tr id=" + (q + 1) * 10 + "><td onclick='handleIput(" + q + ")'>" + name + "</td><td onclick='handleIput(" + q + ")'>" + arr[q].type_id + "</td><td onclick='handleIput(" + q + ")'><img src =" + icon + "></td></tr>"
+    //                 // jQuery.get(
+    //                 //     "https://maps.googleapis.com/maps/api/geocode/json?latlng=" + address[0] + "," + address[1] + "&key=AIzaSyAyFJft-jNj7_wcp56wVfEvdem46_p8-XE&language=en&region=AU",
+    //                 //     function (result) {
+                            
+    //                 //         var addr = result.results[0].formatted_address
+    //                 //         checklist += "<tr onclick='handleIput(" + q + ")' id=" + (q + 1) * 100 + "><td>There is a " + arr[q].type_id + " place " + name + " at " +addr +"</td><td onclick = handleCheckDelete(" + (q + 1) + ")><ion-icon name='close'></ion-icon></td></tr>"
+    //                 //         res += "<tr id=" + (q + 1) * 10 + "><td onclick='handleIput(" + q + ")'>" + name + "</td><td onclick='handleIput(" + q + ")'>" + arr[q].type_id + "</td><td onclick='handleIput(" + q + ")'><img src =" + icon + "></td></tr>"
+    //                 //         // return address
+    //                 //     }
+    //                 // )
+    //             } else if (arr[q].type_id == 'art') {
+    //                 icon = ArtIcon
+    //                 name = arr[q].art_name
+    //                 address.push(arr[q].art_lat)
+    //                 address.push(arr[q].art_long)
+    //                 generateChecklist(address,name,q,arr)
+    //                 res += "<tr id=" + (q + 1) * 10 + "><td onclick='handleIput(" + q + ")'>" + name + "</td><td onclick='handleIput(" + q + ")'>" + arr[q].type_id + "</td><td onclick='handleIput(" + q + ")'><img src =" + icon + "></td></tr>"
+    //             } else if (arr[q].type_id == 'drinkingFountain') {
+    //                 icon = FountainIcon
+    //                 name = arr[q].df_type
+    //                 address.push(arr[q].df_lat)
+    //                 address.push(arr[q].df_long)
+    //                 generateChecklist(address,name,q,arr)
+    //                 res += "<tr id=" + (q + 1) * 10 + "><td onclick='handleIput(" + q + ")'>" + name + "</td><td onclick='handleIput(" + q + ")'>" + arr[q].type_id + "</td><td onclick='handleIput(" + q + ")'><img src =" + icon + "></td></tr>"
+    //             } else if (arr[q].type_id == 'monument') {
+    //                 icon = MonumentIcon
+    //                 name = arr[q].mmt_theme
+    //                 address.push(arr[q].mmt_lat)
+    //                 address.push(arr[q].mmt_long)
+    //                 generateChecklist(address,name,q,arr)
+    //                 res += "<tr id=" + (q + 1) * 10 + "><td onclick='handleIput(" + q + ")'>" + name + "</td><td onclick='handleIput(" + q + ")'>" + arr[q].type_id + "</td><td onclick='handleIput(" + q + ")'><img src =" + icon + "></td></tr>"
+    //             }
+    //         }
+    
+    //         res += "</table>"
+    //         // checklist += "</table><button id = 'cmd' onclick='printPdf();return false'>Download</button>"
+    //         // document.getElementById("checklist").innerHTML = checklist;
+    //         document.getElementById("searchOutput").innerHTML = res;
+    //         disableElements(q)
+    //     } else {
+    //         document.getElementById("searchOutput").innerHTML = "<h2>NO RESULT FOUND</h2>"
+    //     }
+    // }
     
     
     // function printResult(arr){
@@ -633,6 +859,8 @@ function(result) {
         informWindow.close(map, marker)
     }
     function highLight(index) {
+        console.log(finalResult)
+        generateTrans(index)
         if (markers[index].getAnimation() != google.maps.Animation.BOUNCE) {
             markers[index].setAnimation(google.maps.Animation.BOUNCE);
             setTimeout(function(){ markers[index].setAnimation(null); }, 1500);
@@ -788,7 +1016,6 @@ function(result) {
     
             google.maps.event.addListener(marker, 'click', (function (marker, j) {
                 return function () {
-                    printDetails(marker.index)
                     checklistMap.setZoom(16);
                     checklistMap.setCenter(marker.getPosition());
                 }
