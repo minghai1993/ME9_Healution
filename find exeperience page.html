@@ -15,6 +15,9 @@
         <!-- html to pdf library -->
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/0.9.0rc1/jspdf.min.js"></script>
         <style>
+        .dropdown-menu{
+            width:25%
+        }
         /* pdf footer */
         .foot{
             text-align: center;
@@ -684,6 +687,16 @@
     </div>
     <div id="map2"></div>
     <script>
+        // function assignDate(){
+        //     setTimeout(function () {
+        //         generateCalendar(indexx)
+        //         $('#addeventatc1').show()
+        //         var v = document.getElementById('actualDate').value
+        //         document.getElementById('startDate').innerHTML = v
+                
+        //     }, 1000);
+        // }
+        var start = true
         // Date picker dependancy
         !function ($) {
 
@@ -920,6 +933,8 @@
                 },
 
                 click: function (e) {
+                    // assignDate()
+                    this.picker.hide();
                     e.stopPropagation();
                     e.preventDefault();
                     var target = $(e.target).closest('span, td, th');
@@ -1118,7 +1133,7 @@
                     '</thead>',
                 contTemplate: '<tbody><tr><td colspan="7"></td></tr></tbody>'
             };
-            DPGlobal.template = '<div class="datepicker dropdown-menu" style = "z-index: 99999" id = "drop">' +
+            DPGlobal.template = '<div class="notranslate datepicker dropdown-menu" style = "z-index: 99999; display: none;top: 87.5%;left: 67.2%;" id = "drop">' +
                 '<div class="datepicker-days">' +
                 '<table class=" table-condensed">' +
                 DPGlobal.headTemplate +
@@ -1141,6 +1156,7 @@
 
         }(window.jQuery);
         // Global variables
+        var indexx
         var numCheck = 0 // the live number of items in the final checklist
         var valid = false // the validation for input suburb
         var checklistMap // the object of map
@@ -1479,8 +1495,18 @@
         $('#datepicker').datepicker({
             uiLibrary: 'bootstrap4'
         });
+        function handleClick(i) {           
+            indexx = i 
+            numCheck += 1
+            generateTrans(i)
+            generateCalendar(i)
+            highLight(i)
+        }
         // Add function from result tablt to final checklist
         function handleTableClick(i) {
+            
+            indexx = i - 1
+            $('#addeventatc1').hide()
             numCheck += 1
             var showPdf = 'showPdf1'
             $('#datepicker').show()
@@ -1538,6 +1564,10 @@
         // event when change data from datepicker
         $('#datepicker').datepicker()
             .on('changeDate', function (ev) {
+                if(start){
+                    start = false
+                    generateCalendar(indexx)
+                }
                 $('#addeventatc1').show()
                 var v = document.getElementById('actualDate').value
                 console.log(v)
@@ -1572,7 +1602,7 @@
                 "https://maps.googleapis.com/maps/api/geocode/json?latlng=" + add[0] + "," + add[1] + "&key=AIzaSyAyFJft-jNj7_wcp56wVfEvdem46_p8-XE&language=en&region=AU",
                 function (result) {
                     var address = result.results[0].formatted_address
-                    resC += "<span id='startDate' class='datenotranslate start'>" + time + "</span><span class='timezone'>Australia/Melbourne</span><span class='title'>" + title + "</span><span class='location'>" + address + "</span>"
+                    resC += "<span id='startDate' class='notranslate start'>" + time + "</span><span class='timezone'>Australia/Melbourne</span><span class='title'>" + title + "</span><span class='location'>" + address + "</span>"
                     calendar.innerHTML = resC
                     // var myNewTag = document.getElementsByClassName("date");
                     // for(var i = 0; i < myNewTag.length; i++) {
@@ -1644,7 +1674,7 @@
                     // check.setAttribute("data-html2canvas-ignore",true)
                     // check.setAttribute("onclick","handleTableClick('+q+')")
                     var addr = result.results[0].formatted_address
-                    var checkk = "<td onclick = 'generateTrans(" + q + ")'>Go to " + type + " called " + name + " at " + addr + "</td><td data-html2canvas-ignore = 'true' onclick='linkGoogleMap(" + address[0] + "," + address[1] + ")'><button class ='butt'> GO </button></td><td data-html2canvas-ignore = 'true' id = 'remove' onclick = handleCheckDelete(" + (q + 1) + ")><ion-icon name='remove-circle-outline'></ion-icon></td>"
+                    var checkk = "<td onclick = 'handleClick(" + q + ")'>Go to " + type + " called " + name + " at " + addr + "</td><td data-html2canvas-ignore = 'true' onclick='linkGoogleMap(" + address[0] + "," + address[1] + ")'><button class ='butt'> GO </button></td><td data-html2canvas-ignore = 'true' id = 'remove' onclick = handleCheckDelete(" + (q + 1) + ")><ion-icon name='remove-circle-outline'></ion-icon></td>"
                     // return address
                     check.innerHTML = checkk;
                     var finalcheck = document.getElementById('finalchecklist')
@@ -1663,10 +1693,10 @@
                 child.setAttribute('id', (q + 1) * 10)
                 fffresult.appendChild(child)
                 if (result) {
-                    res = "<td onclick='highLight(" + q + ")'><img src =" + icon + "></td><td onclick='highLight(" + q + ")'>" + name + "</td><td onclick='highLight(" + q + ")'>" + result[0].rating + "<td class='jq'  onclick='handleTableClick(" + (q + 1) + ")'>" + "<ion-icon name='add-circle-outline'></ion-icon>" + "</td>"
+                    res = "<td onclick='highLight(" + q + ")'><img src =" + icon + "></td><td onclick='handleClick(" + q + ")'>" + name + "</td><td onclick='highLight(" + q + ")'>" + result[0].rating + "<td class='jq'  onclick='handleTableClick(" + (q + 1) + ")'>" + "<ion-icon name='add-circle-outline'></ion-icon>" + "</td>"
                 }
                 else {
-                    res = "<td onclick='highLight(" + q + ")'><img src =" + icon + "></td><td onclick='highLight(" + q + ")'>" + name + "</td><td onclick='highLight(" + q + ")'>N/A<td class='jq'  onclick='handleTableClick(" + (q + 1) + ")'>" + "<ion-icon name='add-circle-outline'></ion-icon>" + "</td>"
+                    res = "<td onclick='highLight(" + q + ")'><img src =" + icon + "></td><td onclick='handleClick(" + q + ")'>" + name + "</td><td onclick='highLight(" + q + ")'>N/A<td class='jq'  onclick='handleTableClick(" + (q + 1) + ")'>" + "<ion-icon name='add-circle-outline'></ion-icon>" + "</td>"
                 }
                 document.getElementById((q + 1) * 10).innerHTML = res
             })
