@@ -4,7 +4,6 @@
 <script src="https://gitcdn.github.io/bootstrap-toggle/2.2.2/js/bootstrap-toggle.min.js"></script>
 
 <style>
-css for 
 .switch {
   position: relative;
   display: inline-block;
@@ -223,13 +222,14 @@ input:checked + .slider:before {
     .autocomplete-items {
         position: absolute;
         border: 1px solid #d4d4d4;
-        border-bottom: none;
-        border-top: none;
+        border-bottom: 5px solid #d4d4d4;
+        border-top: 5px solid #d4d4d4;
         z-index: 99;
-        /*position the autocomplete items to be the same width as the container:*/
-        top: 16%;
+        top: 19%;
         left: 58px;
         right: 95px;
+        height: 50%;
+        overflow: scroll;
     }
     .autocomplete-items div {
         padding: 10px;
@@ -315,7 +315,6 @@ input:checked + .slider:before {
 <div id='outputTable' class="container">
         <ul class="nav nav-tabs nav-fill" id="nav-tab" role="tablist"></ul>
         <div class="tab-content" id="nav-tabContent"></div>
-
 </div>
 <script type="text/javascript" src="http://www.alwayscherie.ml/wp-content/uploads/2019/04/drinkingfountain.js"></script>
 <script type="text/javascript" src="http://www.alwayscherie.ml/wp-content/uploads/2019/04/art.js"></script>
@@ -633,10 +632,12 @@ input:checked + .slider:before {
     }
     //main function to handle user input from fiterring 
     function handleSubmit(e) {
+        $('#outputTable').hide()
         var ale = document.getElementById('alert');
         var patt = new RegExp("^[a-zA-Z]+$");
         var live_markers = []
-        var suburb = document.getElementById('suburb').value
+        var suburb = ''
+        suburb = document.getElementById('suburb').value
         var checkMon = document.getElementById('checkMon').checked
         var checkArt = document.getElementById('checkArt').checked
         var checkFt = document.getElementById('checkFt').checked
@@ -662,7 +663,7 @@ input:checked + .slider:before {
         if (checkMon) {
             live_markers = live_markers.concat(mon_markers)
         }
-        if (suburb) {
+        if (suburb != ''&& suburb != null) {
             if (patt.test(suburb.replace(/\s/g, ''))) {
                 handleSuburb(suburb, live_markers)
             }
@@ -692,7 +693,7 @@ input:checked + .slider:before {
     }
     // display all the matching point in that area
     function displayTable(row) {
-
+        $('#outputTable').show()
         var artArr = []
         var ftArr = []
         var monArr = []
