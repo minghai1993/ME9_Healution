@@ -1875,6 +1875,7 @@
         }
         // download pdf for final checklist
         function printPdf() {
+            // used checklist item number to controle the number of pages of pdf
             if(numCheck > 0){
                 var foot1 = document.createElement('img')
                 foot1.setAttribute('class','foot')
@@ -1937,6 +1938,7 @@
             // setTimeout(function(){ pdf.save("Always Cherie" + date + ".pdf"); }, 10000);
 
         }
+        //generate map function
         function initCheckListMap(m, suburbLoc) {
             var bounds = new google.maps.LatLngBounds();
             if (suburbLoc) {
@@ -2058,15 +2060,8 @@
                     }
                 })(marker, j))
             }
-
-            // var markerCluster = new MarkerClusterer(map, total_markers,
-            //     {
-            //         imagePath: 'https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m',
-            //         minimumClusterSize: 5
-            //     }
-            // );
-            // MarkerClusterer.Mini
         }
+        //autocomplete function for suburb input
         function autocomplete() {
             var inp = document.getElementById("mySuburb")
             var p = /[0-9]/;

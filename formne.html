@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+	<script src="https://cdn.staticfile.org/jquery/1.10.2/jquery.min.js"></script>
+	<style>
+		#form1{
+			width: 50%;
+			margin: auto;
+			text-align: left;
+			
+		}
+		.form-area{
+			display: block
+		}
+		.form-1{
+			width: 500px;
+			background-color: #f1f1f1;
+			border-radius: 15px;
+		}
+		.next-button{
+			width: 120px;
+			height: 40px;
+			border: 1px solid lightblue;
+			border-radius: 5px;
+			display: inline-block;
+			
+		}
+		.next-button:hover{
+			background-color: lightblue
+		}
+		.back-button{
+			width: 120px;
+			height: 40px;
+			border: 1px solid lightblue;
+			border-radius: 5px;
+			display: inline-block;
+		}
+		#next{
+			height: 100%;
+			width: 100%
+		}
+		#back{
+			height: 100%;
+			width: 100%
+		}
+		#submit{
+			display: block;
+			margin: auto;
+		}
+	</style>
+</head>
+<body>
+<form id="form1" onsubmit="handleSubmit();return false">
+<div class="form-1" id="1">
+	<div class="form-area">
+	<p>What type of activities do you prefer?</p>
+	<input type="radio" name="q1" class='q11' id="q11" value="indoor">Indoor<br>
+	<input type="radio" name="q1" class='q11' id="q12" value="ourdoor">Outdoor<br>
+	<input type="radio" name="q1" class='q11' id="q13" value="both">Both<br>
+	</div>
+	<div  id="11">
+		<p>What theme of activities do you prefer?</p>
+		<input type="checkbox" name="q21" id="test123" value="sport" checked>Sport<br>
+		<input type="checkbox" name="q22" value="history" checked>History<br>
+		<input type="checkbox" name="q23" value="nature" checked>Nature<br>
+	</div>
+	<div class="next-button">
+	<button id="next" class = 'next-1' onclick="handleClickNext();return false">Next</button>
+	</div>
+</div>
+
+<div class="form-1" id="2">
+	<div class="form-area">
+	<p>What type of transport do you prefer?</p>
+	<input type="radio" name="q3" class='q3' value="public">Public
+	<input type="radio" name="q3" class='q3' value="private">Private
+	</div>
+	<div class = 'back-button'>
+	<button id="back"  onclick="handleClickBack();return false">back</button>
+	</div>
+	<div class="next-button">
+	<button id="next" class="next-2" onclick="handleClickNext();return false">next</button>
+	</div>
+</div>
+<div class="form-1" id="3">
+	<div>
+	<p>Do you have a preferred suburb?</p>
+	<input type="radio" name="q4" class='q4' id="q41" value="one"><span>Yes</span>
+	<input type="radio" name="q4" class='q4' id="q42" value="two"><span>No</span>
+	<div id="31">
+	<input type="text" name="q5" placeholder="suburb" class="q33">
+	<input type="text" name="q5" placeholder="postcode" class="q33">
+	</div>
+	</div>
+	<div class = 'back-button'>
+	<button id="back" class = 'back-button' onclick="handleClickBack();return false">back</button>
+	</div>
+	<input id="submit" type="submit">
+</div>
+	
+</form>
+<div id="checkelist"></div>
+<div id="searchOutput">
+
+</div>
+
+
+<script type="text/javascript">
+	$("#11").hide();
+	$(".next-1").prop('disabled', true);
+	$("#q11").click(function(){
+		$("#11").hide()
+	})
+	$("#q12").click(function(){
+		$("#11").show()
+	})
+	$("#q13").click(function(){
+		$("#11").show()
+	})
+	$(".q11").click(function(){
+		$(".next-1").prop('disabled', false);
+	})
+	$(".next-2").prop('disabled', true);
+	$(".q3").click(function(){
+		$(".next-2").prop('disabled', false);
+	})
+	$("#31").hide();
+	$("#q41").click(function(){
+		$("#31").show()
+	})
+	$("#q42").click(function(){
+		$("#31").hide()
+	})
+	$("#submit").prop('disabled', true);
+	$("#q41").click(function(){
+		$("#submit").prop('disabled', true);
+	})
+	$("#q42").click(function(){
+		$("#submit").prop('disabled', false);
+	})
+	$(".q33").change(function(){
+		$("#submit").prop('disabled', false);
+	})
+	var a = 0;
+	var arr = document.getElementsByClassName("form-1")
+	function displayForm(num){
+		for(var i = 0 ; i< arr.length; i++){
+			if(i !== a){
+				arr[i].style.display = 'none'
+			}else{
+				arr[i].style.display = 'inline-block'
+			}
+		}
+	}
+
+	displayForm(a)
+
+	function handleClickNext(){
+		a+=1
+		console.log(a)
+		displayForm(a)
+	}
+
+	function handleClickBack(){
+		a-=1
+		displayForm(a)
+	}
+
+
+
+	var test = [{name:'damon',type:"developer"},{name:"xx",type:"poster"}]
+
+	function handleTableClick(i){
+		$("#"+i*10).hide()
+		$("#" + i*100).show()
+	}
+
+	function handleCheckDelete(i){
+		$("#"+i*10).show()
+		$("#" + i*100).hide()
+	}
+	
+
+	function disableElements(num){
+		for(var m=0;m<num;m++){
+			$("#"+(m+1)*100).hide();
+		}
+	}
+
+
+
+
+	
+
+
+	function printResult(arr){
+		if(arr.length > 0){
+		var res = '<table><tr><th>name</th><th>type</th><th>add</th></tr>';
+		var checkelist =""
+		for(var i = 0 ; i < arr.length; i ++){
+			checkelist += "<p id="+(i+1)*100+">There is " + arr[i].type + " in " + arr[i].name + "   <span onclick = handleCheckDelete("+ (i+1) +")>DELETE</spam></p>"
+			res += "<tr id="+ (i+1)*10+"><td>" + arr[i].name + "</td><td>" + arr[i].type + "</td><td class='jq'  onclick='handleTableClick(" + (i+1)+ ")'>"+"+"+"</td></tr>"
+		}
+
+		res += "</table>"
+		document.getElementById("checkelist").innerHTML=checkelist;
+		document.getElementById("searchOutput").innerHTML=res;
+		disableElements(i)
+		}else{
+		document.getElementById("searchOutput").innerHTML="<p>NO RESULT FOUND</p>"
+		}
+	}
+
+
+
+
+
+
+	printResult(test)
+
+
+
+
+</script>
+</body>
+</html>
