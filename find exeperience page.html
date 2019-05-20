@@ -96,17 +96,17 @@
         .datepicker td.active,
         .datepicker td.active:hover {
             color: #ffffff;
-            background-color: #006dcc;
-            background-image: -moz-linear-gradient(top, #0088cc, #0044cc);
-            background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#0088cc), to(#0044cc));
-            background-image: -webkit-linear-gradient(top, #0088cc, #0044cc);
-            background-image: -o-linear-gradient(top, #0088cc, #0044cc);
-            background-image: linear-gradient(to bottom, #0088cc, #0044cc);
+            background-color: #26c6da;
+            background-image: -moz-linear-gradient(top, #26c6da, #26c6da);
+            background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#26c6da), to(#26c6da));
+            background-image: -webkit-linear-gradient(top, #26c6da, #26c6da);
+            background-image: -o-linear-gradient(top, #26c6da, #26c6da);
+            background-image: linear-gradient(to bottom, #26c6da, #26c6da);
             background-repeat: repeat-x;
             filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ff0088cc', endColorstr='#ff0044cc', GradientType=0);
             border-color: #0044cc #0044cc #002a80;
             border-color: rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.25);
-            *background-color: #0044cc;
+            *background-color: #26c6da;
             /* Darken IE7 buttons by default so they stand out more given they won't have borders */
 
             filter: progid:DXImageTransform.Microsoft.gradient(enabled=false);
@@ -127,15 +127,15 @@
         .datepicker td.active[disabled],
         .datepicker td.active:hover[disabled] {
             color: #ffffff;
-            background-color: #0044cc;
-            *background-color: #003bb3;
+            background-color: #26c6da;
+            *background-color: #26c6da;
         }
 
         .datepicker td.active:active,
         .datepicker td.active:hover:active,
         .datepicker td.active.active,
         .datepicker td.active:hover.active {
-            background-color: #003399 \9;
+            background-color: #26c6da \9;
         }
 
         .datepicker td span {
@@ -1259,14 +1259,12 @@
         function setDate() {
             var today = new Date();
             var date = today.getDay() + '/' + today.getMonth() + '/' + today.getFullYear();
-            console.log(date)
             document.getElementById('datepicker').setAttribute('data-date', date)
             $('#datepicker').datepicker('setValue', today)
         }
         setDate()
         // handle submit from questionaire
         function handleSubmit(e) {
-            console.log(valid)
             if (valid) {
                 $("#form1").hide()
                 $(".big").show()
@@ -1531,17 +1529,17 @@
             document.getElementById(i * 1000).appendChild(content)
             var res = ''
             if (finalResult[i - 1].bus == '') {
-                res += "<tr><th>Bus</th><td>Not Found</td></tr>"
+                res += "<tr><th>Bus</th><td>N/A</td></tr>"
             } else {
                 res += "<table class = 'table'><tr><th>Bus</th><td>" + finalResult[i - 1].bus.bs_desc + "(" + finalResult[i - 1].bus.bs_stopid + ")</td></tr>"
             }
             if (finalResult[i - 1].tram == '') {
-                res += "<tr><th>Tram</th><td>Not Found</td></tr>"
+                res += "<tr><th>Tram</th><td>N/A</td></tr>"
             } else {
                 res += "<tr><th>Tram</th><td>" + finalResult[i - 1].tram.tm_desc + "(" + finalResult[i - 1].tram.tm_stopid + ")</td></tr>"
             }
             if (finalResult[i - 1].railwayStation == '') {
-                res += "<tr><th>Railway Station</th><td>Not Found</td></tr>"
+                res += "<tr><th>Railway Station</th><td>N/A</td></tr>"
             } else {
                 res += "<tr><th>Railway Station</th><td>" + finalResult[i - 1].railwayStation.rs_desc + "(" + finalResult[i - 1].railwayStation.rs_stopid + ")</td></tr>"
             }
@@ -1554,7 +1552,6 @@
         // delete function from final checklist
         function handleCheckDelete(i) {
             numCheck -= 1
-            console.log(i)
             document.getElementById(i * 1000).remove()
             $('#third').hide()
             $("#" + i * 10).show()
@@ -1570,7 +1567,6 @@
                 }
                 $('#addeventatc1').show()
                 var v = document.getElementById('actualDate').value
-                console.log(v)
                 document.getElementById('startDate').innerHTML = v
             });
 
@@ -1645,17 +1641,17 @@
             $('#third').show()
             var res = "<table class = 'table' id = " + (index + 1) * 100000 + "><tr><th>Transportation</th></tr>"
             if (finalResult[index].bus == '') {
-                res += "<tr><th>Bus</th><td>Not Found</td></tr>"
+                res += "<tr><th>Bus</th><td>N/A</td></tr>"
             } else {
                 res += "<tr><th>Bus</th><td>" + finalResult[index].bus.bs_desc + "(" + finalResult[index].bus.bs_stopid + ")</td></tr>"
             }
             if (finalResult[index].tram == '') {
-                res += "<tr><th>Tram</th><td>Not Found</td></tr>"
+                res += "<tr><th>Tram</th><td>N/A</td></tr>"
             } else {
                 res += "<tr><th>Tram</th><td>" + finalResult[index].tram.tm_desc + "(" + finalResult[index].tram.tm_stopid + ")</td></tr>"
             }
             if (finalResult[index].railwayStation == '') {
-                res += "<tr><th>Railway Station</th><td>Not Found</td></tr>"
+                res += "<tr><th>Railway Station</th><td>N/A</td></tr>"
             } else {
                 res += "<tr><th>Railway Station</th><td>" + finalResult[index].railwayStation.rs_desc + "(" + finalResult[index].railwayStation.rs_stopid + ")</td></tr></table>"
             }
@@ -1674,7 +1670,7 @@
                     // check.setAttribute("data-html2canvas-ignore",true)
                     // check.setAttribute("onclick","handleTableClick('+q+')")
                     var addr = result.results[0].formatted_address
-                    var checkk = "<td onclick = 'handleClick(" + q + ")'>Go to " + type + " called " + name + " at " + addr + "</td><td data-html2canvas-ignore = 'true' onclick='linkGoogleMap(" + address[0] + "," + address[1] + ")'><button class ='butt'> GO </button></td><td data-html2canvas-ignore = 'true' id = 'remove' onclick = handleCheckDelete(" + (q + 1) + ")><ion-icon name='remove-circle-outline'></ion-icon></td>"
+                    var checkk = "<td onclick = 'handleClick(" + q + ")'>Go to " + type + " called " + name + " at " + addr + "</td><td data-html2canvas-ignore = 'true' onclick='linkGoogleMap(" + address[0] + "," + address[1] + ")'><button class ='butt'> GO </button></td><td data-html2canvas-ignore = 'true' id = 'remove'><button class ='butt' onclick = 'handleCheckDelete(" + (q + 1) + ")'><ion-icon name='remove-circle-outline'></butt></ion-icon></td>"
                     // return address
                     check.innerHTML = checkk;
                     var finalcheck = document.getElementById('finalchecklist')
@@ -1693,10 +1689,10 @@
                 child.setAttribute('id', (q + 1) * 10)
                 fffresult.appendChild(child)
                 if (result) {
-                    res = "<td onclick='highLight(" + q + ")'><img src =" + icon + "></td><td onclick='handleClick(" + q + ")'>" + name + "</td><td onclick='highLight(" + q + ")'>" + result[0].rating + "<td class='jq'  onclick='handleTableClick(" + (q + 1) + ")'>" + "<ion-icon name='add-circle-outline'></ion-icon>" + "</td>"
+                    res = "<td onclick='handleClick(" + q + ")'><img src =" + icon + "></td><td onclick='handleClick(" + q + ")'>" + name + "</td><td onclick='handleClick(" + q + ")'>" + result[0].rating + "<td class='jq'><button class ='butt' onclick='handleTableClick(" + (q + 1) + ")'><ion-icon name='add-circle-outline'></ion-icon></button></td>"
                 }
                 else {
-                    res = "<td onclick='highLight(" + q + ")'><img src =" + icon + "></td><td onclick='handleClick(" + q + ")'>" + name + "</td><td onclick='highLight(" + q + ")'>N/A<td class='jq'  onclick='handleTableClick(" + (q + 1) + ")'>" + "<ion-icon name='add-circle-outline'></ion-icon>" + "</td>"
+                    res = "<td onclick='handleClick(" + q + ")'><img src =" + icon + "></td><td onclick='handleClick(" + q + ")'>" + name + "</td><td onclick='handleClick(" + q + ")'>N/A<td class='jq'><button class ='butt' onclick='handleTableClick(" + (q + 1) + ")'><ion-icon name='add-circle-outline'></ion-icon></button></td>"
                 }
                 document.getElementById((q + 1) * 10).innerHTML = res
             })

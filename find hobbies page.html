@@ -4,6 +4,9 @@
 <script src="https://gitcdn.github.io/bootstrap-toggle/2.2.2/js/bootstrap-toggle.min.js"></script>
 
 <style>
+.table{
+    color:white
+}
 .switch {
   position: relative;
   display: inline-block;
@@ -42,11 +45,11 @@
 }
 
 input:checked + .slider {
-  background-color: #2196F3;
+  background-color:  #26c6da;
 }
 
 input:focus + .slider {
-  box-shadow: 0 0 1px #2196F3;
+  box-shadow: 0 0 1px #26c6da;
 }
 
 input:checked + .slider:before {
@@ -125,6 +128,7 @@ input:checked + .slider:before {
         display:inline-block;
     }
     #header {
+        color: #1e90ff;
         text-align: center;
     }
     .img{
@@ -185,6 +189,7 @@ input:checked + .slider:before {
     #button {
         width: 90px;
         display: inline;
+        background-color: #26c6da;
     }
     /* #outputTableArt {
         border: 1px solid black;
@@ -570,8 +575,9 @@ input:checked + .slider:before {
             addMark(drinkingfountain, map);
 
         } else if (a.length == 0) {
-
             alert.innerHTML = "Sorry, there is no data for this area";
+        }else if (!b) {
+            alert.innerHTML = "Please enter a Suburb name to search";
         }
         else {
             var zooms = 12
@@ -668,7 +674,7 @@ input:checked + .slider:before {
                 handleSuburb(suburb, live_markers)
             }
             else {
-                ale.innerHTML = 'Please input the right suburb name like SouthBank'
+                ale.innerHTML = 'Please input a valid suburb name like SouthBank'
                 return
             }
         } else if (suburb == '' || suburb == null) {
